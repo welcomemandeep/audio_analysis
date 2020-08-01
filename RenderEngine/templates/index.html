@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>audio_analysis</title>
+
+    <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="container_center">
+    <h1 class="logo">Conference Transcript Recoder</h1>
+    <h2 class="logo">Please assume the following participants to be present in the conference(editable):</h2>
+    <h3 id=participants contentEditable="true">{% for participant in participants %}
+        {{ participant }},
+    {% endfor %}
+    </h3>
+    <form action="{{ url_for('reset') }}" method="GET">
+        <input type="submit" name="reset" value="Reset" onclick="reset();">
+    </form>
+
+</div>
+
+<div class="container_form">
+    <div id="loading"></div>
+    <div id="content">
+        <form action="{{ url_for('predict') }}" method="POST">
+            <label>Please put your chat transcript here:</label>
+            <div>Examples:</div>
+            <div> What are the requirements here, Matt?</div>
+            <div> Matt, Mike - What are the numbers for this quarter?</div>
+            <div>Rajesh, can you mute yourself?</div>
+            <div>I can see some noise on the call. Please mute.</div>
+            <input type="text" name="text" class="textbox" autofocus>
+            <input type="submit" name="chat_transcript" value="Submit" onclick="loading();">
+        </form>
+    </div>
+    <div id="results">
+        {% if context %}
+            {% if is_question == 0 %}
+                <div> Not a question: directed to <b>{{ subject }}</b>
+            {% else %}
+                <div> Question on Type: <b>{{ question_type }}</b> directed to <b>{{ subject }}</b>
+                </div>
+            {% endif %}
+            <div>Context: {{ context }}</div>
+        {% endif %}
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    function reset() {
+        try {
+            $.ajax({
+                type: "GET",
+                url: "/reset"
+            });
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    $("#participants").on("mouseout", function () {
+        var new_participants = $(this).text()
+        debugger
+        new_participants.replace("\n", "")
+        var dict_to_post = {"participants": new_participants}
+        try {
+            $.ajax({
+                type: "POST",
+                url: "/participants",
+                data: dict_to_post
+            });
+        } catch (e) {
+            console.error(e)
+        }
+    })
+
+    function loading() {
+        $("#loading").show();
+        $("#content").hide();
+        $("#logo_container").hide();
+
+
+    }
+</script>
+</html>

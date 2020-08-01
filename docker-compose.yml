@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+  audio-analysis:
+    build: .
+    container_name: audio-analysis
+    hostname: audio-analysis
+    image: welcomemandeep/audio-analysis
+    ports:
+      - "5000:5000"
+    depends_on:
+      - nlp-server
+  nlp-server:
+    image: motiz88/corenlp
+    hostname: coreNLP
+    ports:
+      - "9000:9000"
+
