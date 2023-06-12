@@ -5,7 +5,7 @@ regex==2020.6.8
 sacremoses==0.0.43
 sentencepiece==0.1.91
 tokenizers==0.7.0
-transformers==2.11.0
+transformers==4.30.0
 beautifulsoup4==4.9.1
 flask==1.1.2
 Flask-RESTful==0.3.8
